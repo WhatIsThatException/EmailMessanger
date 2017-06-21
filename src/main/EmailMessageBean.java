@@ -1,20 +1,25 @@
 package main;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import main.utils.MessageHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by kpant on 6/21/17.
  */
 public class EmailMessageBean {
+
+    public static Map<String, Integer> formattedValues = new HashMap<>();
     private SimpleStringProperty sender;
     private SimpleStringProperty subject;
-    private SimpleIntegerProperty size;
+    private SimpleStringProperty size;
 
     public EmailMessageBean(String subject, String sender, int size) {
         this.sender = new SimpleStringProperty(sender);
         this.subject = new SimpleStringProperty(subject);
-        this.size = new SimpleIntegerProperty(size);
+        this.size = new SimpleStringProperty(MessageHelper.formatSize(size));
     }
 
     public String getSender() {
@@ -26,7 +31,7 @@ public class EmailMessageBean {
     }
 
 
-    public int getSize() {
+    public String getSize() {
         return size.get();
     }
 

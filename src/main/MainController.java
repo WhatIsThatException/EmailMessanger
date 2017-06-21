@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 /**
@@ -24,7 +25,7 @@ public class MainController implements Initializable{
     private TableView<EmailMessageBean> emailTableView;
 
     @FXML
-    private TableColumn<EmailMessageBean, Integer> sizeCol;
+    private TableColumn<EmailMessageBean, String> sizeCol;
 
     @FXML
     private TableColumn<EmailMessageBean, String> senderCol;
@@ -55,8 +56,18 @@ public class MainController implements Initializable{
         messageRenderer.getEngine().loadContent("<b>lorem ipsum</b>");
         subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("subject"));
         senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("sender"));
-        sizeCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, Integer>("size"));
+        sizeCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("size"));
         emailTableView.setItems(data);
+
+        sizeCol.setComparator(new Comparator<String>() {
+            Integer int1, int2;
+            @Override
+            public int compare(String o1, String o2) {
+               int1 = EmailMessageBean.formattedValues.get(o1);
+               int2 = EmailMessageBean.formattedValues.get(o2);
+                return int1.compareTo(int2);
+            }
+        });
     }
 
 
