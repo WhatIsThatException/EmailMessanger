@@ -5,10 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.web.WebView;
 
 import java.net.URL;
@@ -20,23 +21,26 @@ import java.util.ResourceBundle;
  */
 public class MainController implements Initializable{
 
-
+    final ObservableList<EmailMessageBean> data = FXCollections.observableArrayList(
+            new EmailMessageBean("Hello from Karan", "abc@abc.com", 550000),
+            new EmailMessageBean("Hello from Sita", "sita@sita.com", 234),
+            new EmailMessageBean("Hello from rita", "rita@rita.com", 3214),
+            new EmailMessageBean("Hello from Geeta", "Geeta@Geeta.com", 1414)
+    );
+    // TreeView works with TreeItem
+    @FXML
+    private TreeView<String> emailsFolderTreeView;
+    private TreeItem<String> root = new TreeItem<>();
     @FXML
     private TableView<EmailMessageBean> emailTableView;
-
     @FXML
     private TableColumn<EmailMessageBean, String> sizeCol;
-
     @FXML
     private TableColumn<EmailMessageBean, String> senderCol;
-
-
     @FXML
     private TableColumn<EmailMessageBean, String> subjectCol;
-
     @FXML
     private WebView messageRenderer;
-
     @FXML
     private Button Button1;
 
@@ -45,12 +49,6 @@ public class MainController implements Initializable{
         System.out.println("button1 clicked");
     }
 
-    final ObservableList<EmailMessageBean> data = FXCollections.observableArrayList(
-      new EmailMessageBean("Hello from Karan","abc@abc.com",550000 ),
-      new EmailMessageBean("Hello from Sita","sita@sita.com",234 ),
-      new EmailMessageBean("Hello from rita","rita@rita.com",3214),
-      new EmailMessageBean("Hello from Geeta","Geeta@Geeta.com",1414)
-    );
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         messageRenderer.getEngine().loadContent("<b>lorem ipsum</b>");
@@ -68,7 +66,45 @@ public class MainController implements Initializable{
                 return int1.compareTo(int2);
             }
         });
+
+        emailsFolderTreeView.setRoot(root);
+        root.setValue("example@yahoo.com");
+        root.setGraphic(resolveIcon(root.getValue()));
+        TreeItem<String> inBox = new TreeItem("InBox", resolveIcon("inbox"));
+        TreeItem<String> sent = new TreeItem("Sent", resolveIcon("sent"));
+
+        TreeItem<String> subItem = new TreeItem<>("SubItem", resolveIcon(""));
+        TreeItem<String> subItem1 = new TreeItem<>("SubItem1", resolveIcon(""));
+        sent.getChildren().addAll(subItem, subItem1);
+
+        TreeItem<String> spam = new TreeItem("Spam", resolveIcon("spam"));
+        TreeItem<String> trash = new TreeItem("Trash", resolveIcon("trash"));
+        root.getChildren().addAll(inBox, sent, spam, trash);
+        root.setExpanded(true);
     }
 
+    private Node resolveIcon(String treeItemValue) {
+        String lowerCaseTreeItemValue = treeItemValue.toLowerCase();
+        ImageView returnIcon;
+        try {
+            if (lowerCaseTreeItemValue.contains("inbox")) {
+                returnIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/inbox.png")));
+            } else if (lowerCaseTreeItemValue.contains("sent")) {
+                returnIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/sent2.png")));
+            } else if (lowerCaseTreeItemValue.contains("spam")) {
+                returnIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/spam.png")));
+            } else if (lowerCaseTreeItemValue.contains("@")) {
+                returnIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/email.png")));
+            } else
+                returnIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/folder.png")));
+        } catch (NullPointerException e) {
+            System.out.println("Invalid image location!!!");
+            e.printStackTrace();
+            returnIcon = new ImageView();
+        }
+        returnIcon.setFitHeight(16);
+        returnIcon.setFitWidth(16);
+        return returnIcon;
+    }
 
 }
