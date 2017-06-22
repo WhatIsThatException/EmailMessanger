@@ -1,7 +1,5 @@
 package main;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,13 +18,10 @@ import java.util.ResourceBundle;
  * Created by kpant on 6/21/17.
  */
 public class MainController implements Initializable{
+    private MenuItem showDetails = new MenuItem("show Detils");
 
-    final ObservableList<EmailMessageBean> data = FXCollections.observableArrayList(
-            new EmailMessageBean("Hello from Karan", "abc@abc.com", 550000),
-            new EmailMessageBean("Hello from Sita", "sita@sita.com", 234),
-            new EmailMessageBean("Hello from rita", "rita@rita.com", 3214),
-            new EmailMessageBean("Hello from Geeta", "Geeta@Geeta.com", 1414)
-    );
+    private SampleData sampleData = new SampleData();
+
     // TreeView works with TreeItem
     @FXML
     private TreeView<String> emailsFolderTreeView;
@@ -51,11 +46,9 @@ public class MainController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        messageRenderer.getEngine().loadContent("<b>lorem ipsum</b>");
         subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("subject"));
         senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("sender"));
         sizeCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("size"));
-        emailTableView.setItems(data);
 
         sizeCol.setComparator(new Comparator<String>() {
             Integer int1, int2;
@@ -67,20 +60,45 @@ public class MainController implements Initializable{
             }
         });
 
-        emailsFolderTreeView.setRoot(root);
+
         root.setValue("example@yahoo.com");
         root.setGraphic(resolveIcon(root.getValue()));
-        TreeItem<String> inBox = new TreeItem("InBox", resolveIcon("inbox"));
-        TreeItem<String> sent = new TreeItem("Sent", resolveIcon("sent"));
+        TreeItem<String> inBox = new TreeItem("inBox", resolveIcon("inbox"));
+        TreeItem<String> sent = new TreeItem("sent", resolveIcon("sent"));
 
-        TreeItem<String> subItem = new TreeItem<>("SubItem", resolveIcon(""));
-        TreeItem<String> subItem1 = new TreeItem<>("SubItem1", resolveIcon(""));
+        TreeItem<String> subItem = new TreeItem<>("subItem", resolveIcon(""));
+        TreeItem<String> subItem1 = new TreeItem<>("subItem1", resolveIcon(""));
         sent.getChildren().addAll(subItem, subItem1);
 
-        TreeItem<String> spam = new TreeItem("Spam", resolveIcon("spam"));
-        TreeItem<String> trash = new TreeItem("Trash", resolveIcon("trash"));
+        TreeItem<String> spam = new TreeItem("spam", resolveIcon("spam"));
+        TreeItem<String> trash = new TreeItem("trash", resolveIcon("trash"));
         root.getChildren().addAll(inBox, sent, spam, trash);
         root.setExpanded(true);
+
+        emailTableView.setContextMenu(new ContextMenu(showDetails));
+        emailsFolderTreeView.setRoot(root);
+
+        emailsFolderTreeView.setOnMouseClicked(e -> {
+            //item value is the value in TreeItem constructor, fist Value
+            TreeItem<String> item = emailsFolderTreeView.getSelectionModel().getSelectedItem();
+            System.out.println("HEREHERE");
+            System.out.println("item = " + item);
+            if (item != null) {
+                emailTableView.setItems(sampleData.emailFolders.get(item.getValue()));
+            }
+
+        });
+
+        emailTableView.setOnMouseClicked(e -> {
+            EmailMessageBean message = emailTableView.getSelectionModel().getSelectedItem();
+            if (message != null) {
+                messageRenderer.getEngine().loadContent(message.getContent());
+            }
+        });
+
+        showDetails.setOnAction(e -> {
+            System.out.println("menuItem clicked");
+        });
     }
 
     private Node resolveIcon(String treeItemValue) {

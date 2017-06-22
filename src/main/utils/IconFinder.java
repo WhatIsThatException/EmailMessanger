@@ -19,8 +19,9 @@ public class IconFinder {
             returnIcon = new ImageView(new Image(getClass().getResourceAsStream("/home/kpant/images/spam.png")));
         } else if (lowerCaseTreeItemValue.contains("@")) {
             returnIcon = new ImageView(new Image(getClass().getResourceAsStream("/home/kpant/images/email.png")));
-        } else
+        } else {
             returnIcon = new ImageView(new Image(getClass().getResourceAsStream("/home/kpant/images/folder.png")));
+        }
 
         return returnIcon;
     }
