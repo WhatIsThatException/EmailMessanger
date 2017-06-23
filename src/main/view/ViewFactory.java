@@ -11,24 +11,31 @@ import main.controller.EmailDetailsController;
 import main.controller.MainController;
 import main.controller.ModelAccess;
 
+import javax.naming.OperationNotSupportedException;
+
 /**
  * Created by kpant on 6/23/17.
  */
 public class ViewFactory {
-
     private static final String DEFAULT_CSS = "style.css";
     private static final String EMAIL_DETAIL_LAYOUT_FXML = "EmailDetailLayout.fxml";
     private static final String MAIN_LAYOUT_FXML = "MainLayout.fxml";
     public static ViewFactory defaultViewFactory = new ViewFactory();
+    private static boolean mainViewInitialized = false;
     private ModelAccess modelAccess = new ModelAccess();
 
     private MainController mainController;
     private EmailDetailsController emailDetailsController;
 
 
-    public Scene getMainScene() {
-        mainController = new MainController(modelAccess);
-        return initializeScene(MAIN_LAYOUT_FXML, mainController);
+    public Scene getMainScene() throws OperationNotSupportedException {
+        if (!mainViewInitialized) {
+            mainController = new MainController(modelAccess);
+            mainViewInitialized = true;
+            return initializeScene(MAIN_LAYOUT_FXML, mainController);
+        } else {
+            throw new OperationNotSupportedException("Main Scene already initialized");
+        }
     }
 
     public Scene getEmailDetailsScene() {
