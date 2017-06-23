@@ -9,7 +9,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import main.SampleData;
-import main.Singleton;
 import main.model.EmailMessageBean;
 import main.view.ViewFactory;
 
@@ -20,10 +19,9 @@ import java.util.ResourceBundle;
 /**
  * Created by kpant on 6/21/17.
  */
-public class MainController implements Initializable{
+public class MainController extends AbstractController implements Initializable {
 
-    private ViewFactory viewFactory = new ViewFactory();
-    private Singleton singleton;
+    private ViewFactory viewFactory = ViewFactory.defaultViewFactory;
     private MenuItem showDetails = new MenuItem("show Detils");
 
     private SampleData sampleData = new SampleData();
@@ -45,6 +43,11 @@ public class MainController implements Initializable{
     @FXML
     private Button Button1;
 
+    public MainController(ModelAccess modelAccess) {
+        super(modelAccess);
+    }
+
+
     @FXML
     void Button1Action(ActionEvent event) {
         System.out.println("button1 clicked");
@@ -52,7 +55,6 @@ public class MainController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        singleton = Singleton.getInstance();
         subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("subject"));
         senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("sender"));
         sizeCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("size"));
@@ -100,7 +102,7 @@ public class MainController implements Initializable{
             EmailMessageBean message = emailTableView.getSelectionModel().getSelectedItem();
             if (message != null) {
                 messageRenderer.getEngine().loadContent(message.getContent());
-                singleton.setMessage(message);
+                getModelAccess().setSelectedMessage(message);
             }
         });
 

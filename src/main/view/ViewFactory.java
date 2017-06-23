@@ -2,43 +2,38 @@ package main.view;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-
-import java.io.IOException;
+import main.controller.AbstractController;
+import main.controller.EmailDetailsController;
+import main.controller.MainController;
+import main.controller.ModelAccess;
 
 /**
  * Created by kpant on 6/23/17.
  */
 public class ViewFactory {
-    public Scene getMainScene() {
-        Pane pane;
-        try {
-            pane = FXMLLoader.load(getClass().getResource("MainLayout.fxml"));
-        } catch (IOException e) {
-            pane = null;
-            e.printStackTrace();
-        }
 
-        Scene scene = new Scene(pane);
-        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-        return scene;
+    private static final String DEFAULT_CSS = "style.css";
+    private static final String EMAIL_DETAIL_LAYOUT_FXML = "EmailDetailLayout.fxml";
+    private static final String MAIN_LAYOUT_FXML = "MainLayout.fxml";
+    public static ViewFactory defaultViewFactory = new ViewFactory();
+    private ModelAccess modelAccess = new ModelAccess();
+
+    private MainController mainController;
+    private EmailDetailsController emailDetailsController;
+
+
+    public Scene getMainScene() {
+        mainController = new MainController(modelAccess);
+        return initializeScene(MAIN_LAYOUT_FXML, mainController);
     }
 
     public Scene getEmailDetailsScene() {
-        Pane pane;
-        try {
-            pane = FXMLLoader.load(getClass().getResource("EmailDetailLayout.fxml"));
-        } catch (IOException e) {
-            pane = null;
-            e.printStackTrace();
-        }
-
-        Scene scene = new Scene(pane);
-        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
-        return scene;
+        emailDetailsController = new EmailDetailsController(modelAccess);
+        return initializeScene(EMAIL_DETAIL_LAYOUT_FXML, emailDetailsController);
     }
 
     public Node resolveIcon(String treeItemValue) {
@@ -63,5 +58,24 @@ public class ViewFactory {
         returnIcon.setFitHeight(16);
         returnIcon.setFitWidth(16);
         return returnIcon;
+    }
+
+    private Scene initializeScene(String fxmlPath, AbstractController controller) {
+        FXMLLoader loader;
+        Parent parent;
+        Scene scene;
+        try {
+            //not FXMLLoader.load(getClass().getResource(fxmlPath)
+            loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            loader.setController(controller);
+            parent = loader.load();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        scene = new Scene(parent);
+        scene.getStylesheets().add(getClass().getResource(DEFAULT_CSS).toExternalForm());
+        return scene;
+
     }
 }
