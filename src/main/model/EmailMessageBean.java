@@ -1,4 +1,4 @@
-package main;
+package main.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import main.utils.MessageHelper;

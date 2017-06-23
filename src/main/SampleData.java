@@ -2,6 +2,7 @@ package main;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import main.model.EmailMessageBean;
 
 import java.util.HashMap;
 import java.util.Map;

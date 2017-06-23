@@ -1,6 +1,6 @@
 package main.utils;
 
-import main.EmailMessageBean;
+import main.model.EmailMessageBean;
 
 /**
  * Created by kpant on 6/21/17.
