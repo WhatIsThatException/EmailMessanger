@@ -11,12 +11,10 @@ import java.util.Map;
  * Created by kpant on 6/21/17.
  */
 public class EmailMessageBean extends AbstractTableItem {
-
     public static Map<String, Integer> formattedValues = new HashMap<>();
     private SimpleStringProperty sender;
     private SimpleStringProperty subject;
     private SimpleStringProperty size;
-
     private String content;
 
     public EmailMessageBean(String subject, String sender, int size, String content, boolean isRead) {
@@ -25,6 +23,16 @@ public class EmailMessageBean extends AbstractTableItem {
         this.subject = new SimpleStringProperty(subject);
         this.size = new SimpleStringProperty(MessageHelper.formatSize(size));
         this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "EmailMessageBean{" +
+                "sender=" + sender +
+                ", subject=" + subject +
+                ", size=" + size +
+                ", content='" + content + '\'' +
+                '}';
     }
 
     public String getSender() {
