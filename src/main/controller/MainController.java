@@ -1,5 +1,8 @@
 package main.controller;
 
+import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,8 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import main.model.EmailAccountBean;
 import main.model.EmailMessageBean;
-import main.model.SampleData;
 import main.model.folder.EmailFolderBean;
 import main.model.table.BoldableRowFactory;
 import main.view.ViewFactory;
@@ -25,7 +28,6 @@ public class MainController extends AbstractController implements Initializable 
 
     private MenuItem showDetails = new MenuItem("show Detils");
 
-    private SampleData sampleData = new SampleData();
 
     // TreeView works with TreeItem
     @FXML
@@ -50,7 +52,25 @@ public class MainController extends AbstractController implements Initializable 
 
     @FXML
     void Button1Action(ActionEvent event) {
-        System.out.println("button1 clicked");
+        Service<Void> emailService = new Service<Void>() {
+
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        ObservableList<EmailMessageBean> data = getModelAccess().getSelectedFolder().getData();
+                        EmailAccountBean emailAccountBean = new EmailAccountBean("fakeaccouns377@gmail.com", "completelyfake");
+                        emailAccountBean.addEmailsToData(data);
+                        return null;
+                    }
+                };
+            }
+        };
+        emailService.start();
+
+
+
     }
 
     @FXML
@@ -112,9 +132,6 @@ public class MainController extends AbstractController implements Initializable 
 
         selectedCode.getChildren().addAll(inBox, sent, spam, trash);
 
-        inBox.getData().addAll(SampleData.inBox);
-        sent.getData().addAll(SampleData.sent);
-        spam.getData().addAll(SampleData.spam);
 
 
 

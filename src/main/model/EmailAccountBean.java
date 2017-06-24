@@ -73,6 +73,7 @@ public class EmailAccountBean {
 
     public void addEmailsToData(ObservableList<EmailMessageBean> data) {
         try {
+            System.out.println("Thread that is fetching emails: " + Thread.currentThread().getName());
             Folder folder = store.getFolder("INBOX");
             folder.open(Folder.READ_ONLY);
             for (int i = folder.getMessageCount(); i > 0; i--) {
