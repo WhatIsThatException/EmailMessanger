@@ -1,6 +1,7 @@
 package main.model;
 
 import javafx.beans.property.SimpleStringProperty;
+import main.model.table.AbstractTableItem;
 import main.utils.MessageHelper;
 
 import java.util.HashMap;
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  * Created by kpant on 6/21/17.
  */
-public class EmailMessageBean {
+public class EmailMessageBean extends AbstractTableItem {
 
     public static Map<String, Integer> formattedValues = new HashMap<>();
     private SimpleStringProperty sender;
@@ -18,7 +19,8 @@ public class EmailMessageBean {
 
     private String content;
 
-    public EmailMessageBean(String subject, String sender, int size, String content) {
+    public EmailMessageBean(String subject, String sender, int size, String content, boolean isRead) {
+        super(isRead);
         this.sender = new SimpleStringProperty(sender);
         this.subject = new SimpleStringProperty(subject);
         this.size = new SimpleStringProperty(MessageHelper.formatSize(size));

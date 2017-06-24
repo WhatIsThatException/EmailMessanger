@@ -8,8 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import main.SampleData;
 import main.model.EmailMessageBean;
+import main.model.SampleData;
+import main.model.table.BoldableRowFactory;
 import main.view.ViewFactory;
 
 import java.net.URL;
@@ -55,6 +56,7 @@ public class MainController extends AbstractController implements Initializable 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        emailTableView.setRowFactory(e -> new BoldableRowFactory<EmailMessageBean>());
         subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("subject"));
         senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("sender"));
         sizeCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("size"));
