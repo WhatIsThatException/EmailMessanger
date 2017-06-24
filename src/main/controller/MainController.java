@@ -54,9 +54,18 @@ public class MainController extends AbstractController implements Initializable 
         System.out.println("button1 clicked");
     }
 
+    @FXML
+    void changeReadAction() {
+        EmailMessageBean message = getModelAccess().getSelectedMessage();
+        if (message != null) {
+            boolean value = message.isRead();
+
+            message.setRead(!value);
+        }
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        emailTableView.setRowFactory(e -> new BoldableRowFactory<EmailMessageBean>());
+        emailTableView.setRowFactory(e -> new BoldableRowFactory<>());
         subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("subject"));
         senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("sender"));
         sizeCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("size"));
