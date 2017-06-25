@@ -1,8 +1,5 @@
 package main.controller;
 
-import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,7 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import main.model.EmailAccountBean;
+import main.controller.services.CreateAndRegisterEmailAccountService;
 import main.model.EmailMessageBean;
 import main.model.folder.EmailFolderBean;
 import main.model.table.BoldableRowFactory;
@@ -52,22 +49,6 @@ public class MainController extends AbstractController implements Initializable 
 
     @FXML
     void Button1Action(ActionEvent event) {
-        Service<Void> emailService = new Service<Void>() {
-
-            @Override
-            protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        ObservableList<EmailMessageBean> data = getModelAccess().getSelectedFolder().getData();
-                        EmailAccountBean emailAccountBean = new EmailAccountBean("fakeaccouns377@gmail.com", "completelyfake");
-                        emailAccountBean.addEmailsToData(data);
-                        return null;
-                    }
-                };
-            }
-        };
-        emailService.start();
 
 
 
@@ -119,22 +100,6 @@ public class MainController extends AbstractController implements Initializable 
 
         emailsFolderTreeView.setRoot(root);
         emailsFolderTreeView.setShowRoot(false);
-
-
-        EmailFolderBean<String> selectedCode = new EmailFolderBean<String>("example@yahoo.com");
-        root.getChildren().add(selectedCode);
-        EmailFolderBean<String> inBox = new EmailFolderBean<String>("InBox", "CompleteInBox");
-        EmailFolderBean<String> sent = new EmailFolderBean<String>("Sent", "CompleteSent");
-        sent.getChildren().add(new EmailFolderBean<String>("SubFolder1", "SubFolder1Complete"));
-        sent.getChildren().add(new EmailFolderBean<String>("SubFolder2", "SubFolder2Complete"));
-        EmailFolderBean<String> spam = new EmailFolderBean<String>("Spam", "CompleteSpam");
-        EmailFolderBean<String> trash = new EmailFolderBean<String>("Trash", "CompleteTrash");
-
-        selectedCode.getChildren().addAll(inBox, sent, spam, trash);
-
-
-
-
         emailsFolderTreeView.setOnMouseClicked(e -> {
             //item value is the value in TreeItem constructor, fist Value
             EmailFolderBean<String> item = (EmailFolderBean<String>) emailsFolderTreeView.getSelectionModel().getSelectedItem();
@@ -146,6 +111,14 @@ public class MainController extends AbstractController implements Initializable 
             }
 
         });
+
+        CreateAndRegisterEmailAccountService createAndRegisterEmailAccountService1 =
+                new CreateAndRegisterEmailAccountService("fakeaccouns377@gmail.com", "completelyfake", root);
+        createAndRegisterEmailAccountService1.start();
+
+        CreateAndRegisterEmailAccountService createAndRegisterEmailAccountService2 =
+                new CreateAndRegisterEmailAccountService("fakeaccouns377@gmail.com", "completelyfake", root);
+        createAndRegisterEmailAccountService2.start();
 
         emailTableView.setOnMouseClicked(e -> {
             EmailMessageBean message = emailTableView.getSelectionModel().getSelectedItem();
