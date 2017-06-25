@@ -4,6 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import main.model.table.AbstractTableItem;
 import main.utils.MessageHelper;
 
+import javax.mail.Message;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,14 +16,14 @@ public class EmailMessageBean extends AbstractTableItem {
     private SimpleStringProperty sender;
     private SimpleStringProperty subject;
     private SimpleStringProperty size;
-    private String content;
+    private Message messageReference;
 
-    public EmailMessageBean(String subject, String sender, int size, String content, boolean isRead) {
+    public EmailMessageBean(String subject, String sender, int size, boolean isRead, Message messageReference) {
         super(isRead);
         this.sender = new SimpleStringProperty(sender);
         this.subject = new SimpleStringProperty(subject);
         this.size = new SimpleStringProperty(MessageHelper.formatSize(size));
-        this.content = content;
+        this.messageReference = messageReference;
     }
 
     @Override
@@ -31,7 +32,6 @@ public class EmailMessageBean extends AbstractTableItem {
                 "sender=" + sender +
                 ", subject=" + subject +
                 ", size=" + size +
-                ", content='" + content + '\'' +
                 '}';
     }
 
@@ -48,8 +48,8 @@ public class EmailMessageBean extends AbstractTableItem {
         return size.get();
     }
 
-    public String getContent() {
-        return content;
-    }
 
+    public Message getMessageReference() {
+        return messageReference;
+    }
 }

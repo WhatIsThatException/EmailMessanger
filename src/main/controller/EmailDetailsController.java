@@ -47,6 +47,6 @@ public class EmailDetailsController extends AbstractController implements Initia
         subjectLabel.setText("Subject: " + selectedMessage.getSubject());
         senderLabel.setText("Sender: " + selectedMessage.getSender());
 
-        webView.getEngine().loadContent(getModelAccess().getSelectedMessage().getContent());
+//        webView.getEngine().loadContent(getModelAccess().getSelectedMessage().getContent());
     }
 }

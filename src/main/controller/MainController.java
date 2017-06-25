@@ -1,5 +1,6 @@
 package main.controller;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,6 +11,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import main.controller.services.CreateAndRegisterEmailAccountService;
 import main.controller.services.FolderUpdaterService;
+import main.controller.services.MessageRendererService;
 import main.model.EmailMessageBean;
 import main.model.folder.EmailFolderBean;
 import main.model.table.BoldableRowFactory;
@@ -42,7 +44,7 @@ public class MainController extends AbstractController implements Initializable 
     private WebView messageRenderer;
     @FXML
     private Button Button1;
-
+    private MessageRendererService messageRendererService;
     public MainController(ModelAccess modelAccess) {
         super(modelAccess);
     }
@@ -50,8 +52,6 @@ public class MainController extends AbstractController implements Initializable 
 
     @FXML
     void Button1Action(ActionEvent event) {
-
-
 
     }
 
@@ -75,6 +75,7 @@ public class MainController extends AbstractController implements Initializable 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        messageRendererService = new MessageRendererService(messageRenderer.getEngine());
         FolderUpdaterService folderUpdaterService = new FolderUpdaterService(getModelAccess().getFoldersList());
         folderUpdaterService.start();
         ViewFactory viewFactory = ViewFactory.defaultViewFactory;
@@ -126,8 +127,10 @@ public class MainController extends AbstractController implements Initializable 
         emailTableView.setOnMouseClicked(e -> {
             EmailMessageBean message = emailTableView.getSelectionModel().getSelectedItem();
             if (message != null) {
-                messageRenderer.getEngine().loadContent(message.getContent());
                 getModelAccess().setSelectedMessage(message);
+                messageRendererService.setMessageToRender(message);
+//                messageRendererService.restart();
+                Platform.runLater(messageRendererService); //render of msg is done on Application thread
             }
         });
 
