@@ -6,6 +6,10 @@ import javafx.scene.control.TreeItem;
 import main.model.EmailMessageBean;
 import main.view.ViewFactory;
 
+import javax.mail.Flags;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+
 /**
  * Created by kpant on 6/24/17.
  */
@@ -56,9 +60,15 @@ public class EmailFolderBean<T> extends TreeItem<String> {
         updateValue();
     }
 
-    public void addEmail(EmailMessageBean message) {
-        data.add(message);
-        if (message.isRead()) {
+    public void addEmail(int position, Message message) throws MessagingException {
+        boolean isRead = message.getFlags().contains(Flags.Flag.SEEN);
+        EmailMessageBean emailMessageBean = new EmailMessageBean(message.getSubject(), message.getFrom()[0].toString(), message.getSize(), "", isRead);
+        if (position < 0) {
+            data.add(emailMessageBean);
+        } else {
+            data.add(position, emailMessageBean);
+        }
+        if (!isRead) {
             incrementUnreadMessagesCount(1);
         }
     }

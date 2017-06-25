@@ -9,6 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import main.controller.services.CreateAndRegisterEmailAccountService;
+import main.controller.services.FolderUpdaterService;
 import main.model.EmailMessageBean;
 import main.model.folder.EmailFolderBean;
 import main.model.table.BoldableRowFactory;
@@ -74,6 +75,8 @@ public class MainController extends AbstractController implements Initializable 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        FolderUpdaterService folderUpdaterService = new FolderUpdaterService(getModelAccess().getFoldersList());
+        folderUpdaterService.start();
         ViewFactory viewFactory = ViewFactory.defaultViewFactory;
 
         emailTableView.setRowFactory(e -> new BoldableRowFactory<>());
@@ -113,11 +116,11 @@ public class MainController extends AbstractController implements Initializable 
         });
 
         CreateAndRegisterEmailAccountService createAndRegisterEmailAccountService1 =
-                new CreateAndRegisterEmailAccountService("fakeaccouns377@gmail.com", "completelyfake", root);
+                new CreateAndRegisterEmailAccountService("fakeaccouns377@gmail.com", "completelyfake", root, getModelAccess());
         createAndRegisterEmailAccountService1.start();
 
         CreateAndRegisterEmailAccountService createAndRegisterEmailAccountService2 =
-                new CreateAndRegisterEmailAccountService("fakeaccouns377@gmail.com", "completelyfake", root);
+                new CreateAndRegisterEmailAccountService("fakeaccouns377@gmail.com", "completelyfake", root, getModelAccess());
         createAndRegisterEmailAccountService2.start();
 
         emailTableView.setOnMouseClicked(e -> {

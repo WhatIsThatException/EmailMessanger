@@ -2,6 +2,7 @@ package main.controller.services;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import main.controller.ModelAccess;
 import main.model.EmailAccountBean;
 import main.model.EmailConstants;
 import main.model.folder.EmailFolderBean;
@@ -14,8 +15,10 @@ public class CreateAndRegisterEmailAccountService extends Service<Integer> {
     private String emailAddress;
     private String password;
     private EmailFolderBean<String> folderRoot;
+    private ModelAccess modelAccess;
 
-    public CreateAndRegisterEmailAccountService(String emailAddress, String password, EmailFolderBean<String> folderRoot) {
+    public CreateAndRegisterEmailAccountService(String emailAddress, String password, EmailFolderBean<String> folderRoot, ModelAccess modelAccess) {
+        this.modelAccess = modelAccess;
         this.emailAddress = emailAddress;
         this.password = password;
         this.folderRoot = folderRoot;
@@ -30,7 +33,7 @@ public class CreateAndRegisterEmailAccountService extends Service<Integer> {
                 if (emailAccount.getLoginState() == EmailConstants.LOGIN_STATE_SUCCEDED) {
                     EmailFolderBean<String> emailFolderBean = new EmailFolderBean<String>(emailAddress);
                     folderRoot.getChildren().add(emailFolderBean);
-                    FetchFoldersService fetchFoldersService = new FetchFoldersService(emailFolderBean, emailAccount);
+                    FetchFoldersService fetchFoldersService = new FetchFoldersService(emailFolderBean, emailAccount, modelAccess);
                     fetchFoldersService.start();
                 }
                 return emailAccount.getLoginState();
