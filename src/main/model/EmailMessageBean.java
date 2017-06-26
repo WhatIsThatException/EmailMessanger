@@ -1,36 +1,37 @@
 package main.model;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import main.model.table.AbstractTableItem;
-import main.utils.MessageHelper;
+import main.model.table.FormatableInteger;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by kpant on 6/21/17.
  */
 public class EmailMessageBean extends AbstractTableItem {
-    public static Map<String, Integer> formattedValues = new HashMap<>();
     private SimpleStringProperty sender;
     private SimpleStringProperty subject;
-    private SimpleStringProperty size;
+    private SimpleObjectProperty<FormatableInteger> size;
     private Message messageReference;
+    private SimpleObjectProperty<Date> date;
     //Attachments handling:
     private List<MimeBodyPart> attachmentsList = new ArrayList<>();
     private StringBuffer attachmentsName = new StringBuffer();
 
-    public EmailMessageBean(String subject, String sender, int size, boolean isRead, Message messageReference) {
+    public EmailMessageBean(String subject, String sender, int size, boolean isRead, Date date, Message messageReference) {
         super(isRead);
         this.sender = new SimpleStringProperty(sender);
         this.subject = new SimpleStringProperty(subject);
-        this.size = new SimpleStringProperty(MessageHelper.formatSize(size));
+        this.size = new SimpleObjectProperty<FormatableInteger>(new FormatableInteger(size));
         this.messageReference = messageReference;
+        this.date = new SimpleObjectProperty<>(date);
     }
 
     public List<MimeBodyPart> getAttachmentsList() {
@@ -78,12 +79,20 @@ public class EmailMessageBean extends AbstractTableItem {
     }
 
 
-    public String getSize() {
+    public FormatableInteger getSize() {
         return size.get();
     }
 
 
     public Message getMessageReference() {
         return messageReference;
+    }
+
+    public Date getDate() {
+        return date.get();
+    }
+
+    public SimpleObjectProperty<Date> dateProperty() {
+        return date;
     }
 }

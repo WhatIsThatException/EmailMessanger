@@ -15,10 +15,11 @@ import main.controller.services.SaveAttachmentsService;
 import main.model.EmailMessageBean;
 import main.model.folder.EmailFolderBean;
 import main.model.table.BoldableRowFactory;
+import main.model.table.FormatableInteger;
 import main.view.ViewFactory;
 
 import java.net.URL;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 /**
@@ -35,7 +36,7 @@ public class MainController extends AbstractController implements Initializable 
     @FXML
     private TableView<EmailMessageBean> emailTableView;
     @FXML
-    private TableColumn<EmailMessageBean, String> sizeCol;
+    private TableColumn<EmailMessageBean, FormatableInteger> sizeCol;
     @FXML
     private TableColumn<EmailMessageBean, String> senderCol;
     @FXML
@@ -45,6 +46,8 @@ public class MainController extends AbstractController implements Initializable 
 
     @FXML
     private Label downAttachLabel;
+    @FXML
+    private TableColumn<EmailMessageBean, Date> dateCol;
 
     @FXML
     private ProgressBar downAttachProgress;
@@ -110,20 +113,12 @@ public class MainController extends AbstractController implements Initializable 
         emailTableView.setRowFactory(e -> new BoldableRowFactory<>());
         subjectCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("subject"));
         senderCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("sender"));
-        sizeCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, String>("size"));
-
-        sizeCol.setComparator(new Comparator<String>() {
-            Integer int1, int2;
-
-            @Override
-            public int compare(String o1, String o2) {
-                int1 = EmailMessageBean.formattedValues.get(o1);
-                int2 = EmailMessageBean.formattedValues.get(o2);
-                return int1.compareTo(int2);
-            }
-        });
+        dateCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, Date>("date"));
+        sizeCol.setCellValueFactory(new PropertyValueFactory<EmailMessageBean, FormatableInteger>("size"));
 
 
+        //BUG: size doesn't get it's default comparator overridden, so we do it by hand.
+        sizeCol.setComparator(new FormatableInteger(0));
         emailTableView.setContextMenu(new ContextMenu(showDetails));
 
 
