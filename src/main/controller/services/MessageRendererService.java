@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * Created by kpant on 6/25/17.
  */
-public class MessageRendererService extends Service<Void> implements Runnable {
+public class MessageRendererService extends Service<Void> {
     private EmailMessageBean messageToRender;
     private WebEngine messageRendererEngine;
     private StringBuffer sb = new StringBuffer();
@@ -27,6 +27,9 @@ public class MessageRendererService extends Service<Void> implements Runnable {
 
     public void setMessageToRender(EmailMessageBean messageToRender) {
         this.messageToRender = messageToRender;
+        this.setOnSucceeded(e -> {
+            showMessage();
+        });
     }
 
     @Override
@@ -44,6 +47,7 @@ public class MessageRendererService extends Service<Void> implements Runnable {
     private void renderMessage() {
         //clear the sb
         sb.setLength(0);
+        messageToRender.clearAttachments();
         Message message = messageToRender.getMessageReference();
         try {
             String messageType = message.getContentType();
@@ -63,9 +67,11 @@ public class MessageRendererService extends Service<Void> implements Runnable {
                         if (sb.length() == 0) {
                             sb.append(bp.getContent().toString());
                         }
-                        //here the attachments are handled TODO by someone who cares
-                    } else if (contentType.toLowerCase().contains("application")) {
+                        //here the attachments are handled
+                    } else if (contentType.toLowerCase().contains("application") || contentType.toLowerCase().contains("image")
+                            || contentType.toLowerCase().contains("audio")) {
                         MimeBodyPart mbp = (MimeBodyPart) bp;
+                        messageToRender.addAttachment(mbp);
                         //Sometimes the text content of the message is encapsulated in another multipart.
                         //so we have to iterate again through it.
                     } else if (bp.getContentType().contains("multipart")) {
@@ -80,8 +86,7 @@ public class MessageRendererService extends Service<Void> implements Runnable {
                     }
                 }
             }
-            messageRendererEngine.loadContent(sb.toString());
-
+            System.out.println("SB____===" + sb);
         } catch (MessagingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -90,9 +95,13 @@ public class MessageRendererService extends Service<Void> implements Runnable {
 
     }
 
+    /**
+     * Only called once the message is loaded
+     * handle the info about attachments
+     */
+    private void showMessage() {
+        messageRendererEngine.loadContent(sb.toString());
 
-    @Override
-    public void run() {
-        renderMessage();
     }
+
 }

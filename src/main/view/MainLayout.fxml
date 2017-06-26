@@ -20,5 +20,10 @@
         <WebView fx:id="messageRenderer" layoutX="215.0" layoutY="275.0" prefHeight="300.0" prefWidth="764.0" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="215.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="275.0" />
         <Button layoutX="260.0" layoutY="21.0" mnemonicParsing="false" onAction="#changeReadAction"
                 text="change Read Property"/>
+        <Label fx:id="downAttachLabel" layoutX="753.0" layoutY="14.0" text="download Attachmetns"/>
+        <ProgressBar fx:id="downAttachProgress" layoutX="753.0" layoutY="36.0" prefHeight="20.0" prefWidth="155.0"
+                     progress="0.0"/>
+        <Button fx:id="downAttachBtn" layoutX="543.0" layoutY="17.0" mnemonicParsing="false"
+                onAction="#downAttachBtnAction" text="Download Attachments"/>
     </children>
 </AnchorPane>

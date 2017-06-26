@@ -6,10 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import main.controller.AbstractController;
-import main.controller.EmailDetailsController;
-import main.controller.MainController;
-import main.controller.ModelAccess;
+import main.controller.*;
 
 import javax.naming.OperationNotSupportedException;
 
@@ -20,15 +17,20 @@ public class ViewFactory {
     private static final String DEFAULT_CSS = "style.css";
     private static final String EMAIL_DETAIL_LAYOUT_FXML = "EmailDetailLayout.fxml";
     private static final String MAIN_LAYOUT_FXML = "MainLayout.fxml";
+    private static final String COMPOSE_SCREEN_FXML = "ComposeMessageLayout.fxml";
     public static ViewFactory defaultViewFactory = new ViewFactory();
     private static boolean mainViewInitialized = false;
     private ModelAccess modelAccess = new ModelAccess();
 
-    private MainController mainController;
-    private EmailDetailsController emailDetailsController;
+    public Scene getComposeMessageScene() {
+        AbstractController composeController = new ComposeMessageController(modelAccess);
+        return initializeScene(COMPOSE_SCREEN_FXML, composeController);
+    }
 
 
     public Scene getMainScene() throws OperationNotSupportedException {
+        AbstractController mainController = new ComposeMessageController(modelAccess);
+
         if (!mainViewInitialized) {
             mainController = new MainController(modelAccess);
             mainViewInitialized = true;
@@ -39,6 +41,8 @@ public class ViewFactory {
     }
 
     public Scene getEmailDetailsScene() {
+        AbstractController emailDetailsController = new ComposeMessageController(modelAccess);
+
         emailDetailsController = new EmailDetailsController(modelAccess);
         return initializeScene(EMAIL_DETAIL_LAYOUT_FXML, emailDetailsController);
     }
